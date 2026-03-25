@@ -1204,7 +1204,7 @@ NUM_SHARED_EXPERTS = 1
 EXPERT_DIM = 0  # 0 means use model_dim
 
 # mHC configuration
-MHC_EXPANSION = 2
+MHC_EXPANSION = 4
 
 
 def build_model_config(depth, vocab_size, runtime, use_activation_checkpointing=None):
