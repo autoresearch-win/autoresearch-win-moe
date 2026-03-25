@@ -1,0 +1,12 @@
+commit	val_bpb	memory_gb	status	description
+a54f6c7	0.988857	2.3	keep	reduce model size: depth=4, experts=4, mhc_expansion=2
+01cb493	0.905596	2.3	keep	learned stream projection weights
+42f8afc	1.202811	2.5	discard	increase mhc_expansion to 4
+3f4f231	0.000000	0.0	discard	increase depth to 8 with learned projection (incomplete)
+17d3d3a	2.038899	2.3	discard	replace MuonAdamW with AdamW for all parameters
+a664647	0.886884	2.3	keep	increase MATRIX_LR to 0.08 with MuonAdamW
+b9c0baa	0.937675	2.3	discard	change AdamW betas to (0.9, 0.999)
+0a393db	0.885009	2.3	keep	increase Muon momentum to 0.99
+bd3e736	0.884200	2.3	keep	increase Muon ns_steps to 10
+e3ebce0	0.885242	2.3	discard	increase Muon beta2 to 0.99
+053fb55	0.884437	2.3	discard	increase WEIGHT_DECAY to 0.3
