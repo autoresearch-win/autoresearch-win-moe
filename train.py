@@ -337,7 +337,6 @@ class GPTConfig:
     top_k_experts: int = 2
     num_shared_experts: int = 1
     expert_dim: int = 0
-    use_mhc: bool = False
     mhc_expansion: int = 4
 
 
@@ -650,23 +649,16 @@ class Block(nn.Module):
         self.config = config
         self.layer_idx = layer_idx
         self.moe = MoELayer(config, layer_idx)
-        if config.use_mhc:
-            self.mhc_attn = ManifoldHyperConnections(config)
+        self.mhc_attn = ManifoldHyperConnections(config)
 
     def forward(self, x, ve, cos_sin, window_size):
-        if self.config.use_mhc:
-            # Use mHC for attention
-            attn_fn = lambda inp: self.attn(norm(inp), ve, cos_sin, window_size)
-            x = self.mhc_attn(x, attn_fn)
-            # Keep MoE as regular residual
-            moe_out, lb_loss = self.moe(norm(x))
-            x = x + moe_out
-            return x, lb_loss
-        else:
-            x = x + self.attn(norm(x), ve, cos_sin, window_size)
-            moe_out, lb_loss = self.moe(norm(x))
-            x = x + moe_out
-            return x, lb_loss
+        # Use mHC for attention
+        attn_fn = lambda inp: self.attn(norm(inp), ve, cos_sin, window_size)
+        x = self.mhc_attn(x, attn_fn)
+        # Keep MoE as regular residual
+        moe_out, lb_loss = self.moe(norm(x))
+        x = x + moe_out
+        return x, lb_loss
 
 
 class GPT(nn.Module):
@@ -717,7 +709,6 @@ class GPT(nn.Module):
             for shared in block.moe.shared_experts:
                 torch.nn.init.uniform_(shared.c_fc.weight, -s, s)
                 torch.nn.init.zeros_(shared.c_proj.weight)
-            if self.config.use_mhc:
                 torch.nn.init.uniform_(block.mhc_attn.phi_pre.weight, -s, s)
                 torch.nn.init.uniform_(block.mhc_attn.phi_post.weight, -s, s)
                 torch.nn.init.uniform_(block.mhc_attn.phi_res.weight, -s, s)
@@ -839,7 +830,7 @@ class GPT(nn.Module):
             for name, param in block.named_parameters():
                 if "router" in name:
                     router_params.append(param)
-                elif self.config.use_mhc and ("mhc" in name):
+                elif "mhc" in name:
                     # mHC parameters - separate 2D matrices from vectors/scalars
                     if "phi" in name or "b_res" in name:
                         # 2D matrices go to Muon
@@ -974,10 +965,7 @@ class GPT(nn.Module):
             ve = self.value_embeds[str(i)](idx) if str(i) in self.value_embeds else None
             window_size = self.window_sizes[i]
             # Activation checkpointing disabled for MoE (due to tuple return)
-            if self.config.use_mhc:
-                x, lb_loss = block(x, ve, cos_sin, window_size)
-            else:
-                x, lb_loss = block(x, ve, cos_sin, window_size)
+            x, lb_loss = block(x, ve, cos_sin, window_size)
             if lb_loss is not None:
                 if total_lb_loss is None:
                     total_lb_loss = lb_loss
@@ -1212,7 +1200,6 @@ NUM_SHARED_EXPERTS = 1
 EXPERT_DIM = 0  # 0 means use model_dim
 
 # mHC configuration
-USE_MHC = True
 MHC_EXPANSION = 4
 
 
@@ -1237,7 +1224,6 @@ def build_model_config(depth, vocab_size, runtime, use_activation_checkpointing=
         top_k_experts=TOP_K_EXPERTS,
         num_shared_experts=NUM_SHARED_EXPERTS,
         expert_dim=EXPERT_DIM,
-        use_mhc=USE_MHC,
         mhc_expansion=MHC_EXPANSION,
     )
 
