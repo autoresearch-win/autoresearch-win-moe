@@ -949,7 +949,7 @@ class GPT(nn.Module):
                         kind="muon",
                         params=chunk,
                         lr=matrix_lr,
-                        momentum=0.95,
+                        momentum=0.99,
                         ns_steps=5,
                         beta2=0.95,
                         weight_decay=weight_decay,
@@ -1192,7 +1192,7 @@ UNEMBEDDING_LR = 0.004
 MATRIX_LR = 0.08
 SCALAR_LR = 0.5
 WEIGHT_DECAY = 0.2
-ADAM_BETAS = (0.9, 0.999)
+ADAM_BETAS = (0.8, 0.95)
 WARMUP_RATIO = 0.0
 WARMDOWN_RATIO = 0.5
 FINAL_LR_FRAC = 0.0
