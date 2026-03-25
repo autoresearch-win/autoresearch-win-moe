@@ -943,6 +943,7 @@ class GPT(nn.Module):
         if matrix_params:
             param_groups.append(
                 dict(
+                    kind="adamw",
                     params=matrix_params,
                     lr=matrix_lr,
                     betas=adam_betas,
