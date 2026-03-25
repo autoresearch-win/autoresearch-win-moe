@@ -611,13 +611,18 @@ class ManifoldHyperConnections(nn.Module):
 
         return h_pre, h_post, h_res
 
+    def _compute_mappings_checkpointed(self, x_norm):
+        """Checkpointed version of compute_mappings for memory efficiency."""
+        # Checkpointing disabled due to issues
+        return self.compute_mappings(x_norm)
+
     def forward(self, x, layer_fn):
         """Apply mHC to the residual connection."""
         B, T, D = x.shape
         n = self.n
 
         x_norm = norm(x)
-        h_pre, h_post, h_res = self.compute_mappings(x_norm)
+        h_pre, h_post, h_res = self._compute_mappings_checkpointed(x_norm)
 
         # Expand x to n streams: [B, T, D] -> [B, T, n, D]
         x_streams = x.unsqueeze(2).expand(-1, -1, n, -1)  # [B, T, n, D]
@@ -1193,7 +1198,7 @@ WARMDOWN_RATIO = 0.5
 FINAL_LR_FRAC = 0.0
 
 # Model size + memory defaults
-DEPTH = 4
+DEPTH = 8
 DEVICE_BATCH_SIZE = 8
 EVAL_BATCH_SIZE = 8
 
