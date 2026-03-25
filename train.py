@@ -577,6 +577,8 @@ class ManifoldHyperConnections(nn.Module):
         self.alpha_pre = nn.Parameter(torch.tensor(0.01))
         self.alpha_post = nn.Parameter(torch.tensor(0.01))
         self.alpha_res = nn.Parameter(torch.tensor(0.01))
+        # Stream projection weights
+        self.stream_weights = nn.Parameter(torch.ones(self.n) / self.n)
 
     def sinkhorn_knopp(self, M, num_iters=20):
         """Sinkhorn-Knopp algorithm to project onto doubly stochastic manifold."""
@@ -636,8 +638,10 @@ class ManifoldHyperConnections(nn.Module):
         # Combine residual and layer output
         output_streams = x_residual + layer_weighted  # [B, T, n, D]
 
-        # Contract back: average across streams
-        output = output_streams.mean(dim=2)  # [B, T, D]
+        # Contract back: weighted sum across streams
+        output = (output_streams * self.stream_weights.view(1, 1, -1, 1)).sum(
+            dim=2
+        )  # [B, T, D]
 
         return output
 
