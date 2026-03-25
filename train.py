@@ -932,7 +932,7 @@ class GPT(nn.Module):
                 dict(
                     kind="adamw",
                     params=adamw_params,
-                    lr=scalar_lr * 0.2,
+                    lr=scalar_lr * 0.1,
                     betas=adam_betas,
                     eps=1e-10,
                     weight_decay=0.0,
