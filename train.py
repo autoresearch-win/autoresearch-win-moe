@@ -939,19 +939,23 @@ class GPT(nn.Module):
                 )
             )
 
-        # Add matrix params as AdamW group
-        if matrix_params:
-            param_groups.append(
-                dict(
-                    kind="adamw",
-                    params=matrix_params,
-                    lr=matrix_lr,
-                    betas=adam_betas,
-                    eps=1e-10,
-                    weight_decay=weight_decay,
+        muon_group_chunk = 8
+        for shape in sorted({p.shape for p in matrix_params}):
+            group_params = [p for p in matrix_params if p.shape == shape]
+            for ci in range(0, len(group_params), muon_group_chunk):
+                chunk = group_params[ci : ci + muon_group_chunk]
+                param_groups.append(
+                    dict(
+                        kind="muon",
+                        params=chunk,
+                        lr=matrix_lr,
+                        momentum=0.95,
+                        ns_steps=5,
+                        beta2=0.95,
+                        weight_decay=weight_decay,
+                    )
                 )
-            )
-        optimizer = torch.optim.AdamW(param_groups)
+        optimizer = MuonAdamW(param_groups)
         for group in optimizer.param_groups:
             group["initial_lr"] = group["lr"]
         return optimizer
@@ -1185,7 +1189,7 @@ WINDOW_PATTERN = "SSSL"  # sliding window pattern: L=full, S=half context
 TOTAL_BATCH_SIZE = 2**19
 EMBEDDING_LR = 0.6
 UNEMBEDDING_LR = 0.004
-MATRIX_LR = 0.04
+MATRIX_LR = 0.08
 SCALAR_LR = 0.5
 WEIGHT_DECAY = 0.2
 ADAM_BETAS = (0.8, 0.95)
