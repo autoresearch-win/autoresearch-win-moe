@@ -1189,18 +1189,18 @@ WARMDOWN_RATIO = 0.5
 FINAL_LR_FRAC = 0.0
 
 # Model size + memory defaults
-DEPTH = 8
+DEPTH = 4
 DEVICE_BATCH_SIZE = 8
 EVAL_BATCH_SIZE = 8
 
 # MoE configuration (always enabled)
-NUM_EXPERTS = 8
+NUM_EXPERTS = 4
 TOP_K_EXPERTS = 2
 NUM_SHARED_EXPERTS = 1
 EXPERT_DIM = 0  # 0 means use model_dim
 
 # mHC configuration
-MHC_EXPANSION = 4
+MHC_EXPANSION = 2
 
 
 def build_model_config(depth, vocab_size, runtime, use_activation_checkpointing=None):
