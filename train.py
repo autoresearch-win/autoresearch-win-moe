@@ -951,7 +951,7 @@ class GPT(nn.Module):
                         lr=matrix_lr,
                         momentum=0.99,
                         ns_steps=10,
-                        beta2=0.95,
+                        beta2=0.99,
                         weight_decay=weight_decay,
                     )
                 )
