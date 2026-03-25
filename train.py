@@ -803,9 +803,9 @@ class GPT(nn.Module):
             for name, param in block.named_parameters():
                 if "router" in name:
                     moe_router += param.numel()
-                elif "experts" in name and "experts." in name:
+                elif "experts" in name and "experts." in name and "shared" not in name:
                     moe_experts += param.numel()
-                elif "shared" in name:
+                elif "shared_experts" in name:
                     moe_shared += param.numel()
         total = wte + value_embeds + lm_head + transformer_matrices + scalars
         return {
