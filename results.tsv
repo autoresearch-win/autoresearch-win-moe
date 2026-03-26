@@ -10,3 +10,7 @@ b9c0baa	0.937675	2.3	discard	change AdamW betas to (0.9, 0.999)
 bd3e736	0.884200	2.3	keep	increase Muon ns_steps to 10
 e3ebce0	0.885242	2.3	discard	increase Muon beta2 to 0.99
 053fb55	0.884437	2.3	discard	increase WEIGHT_DECAY to 0.3
+91d29fd	1.073391	2.3	discard	add 10% warmup
+8f94c4a	0.928131	2.3	discard	extend warmdown to 80%
+a74ab8b	0.000000	0.0	crash	increase mHC AdamW LR to scalar_lr*0.2
+aacca4d	0.000000	0.0	discard	increase to 32 experts, 2 shared (timeout)
