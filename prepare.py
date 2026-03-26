@@ -31,7 +31,7 @@ import datasets
 MAX_SEQ_LEN = 2048  # context length
 TIME_BUDGET = 3000  # training time budget in seconds (50 minutes)
 EVAL_TOKENS = 40 * 524288  # number of tokens for validation eval
-VOCAB_SIZE = 8192
+VOCAB_SIZE = 16384
 
 # BPE split pattern (GPT-4 style, with \p{N}{1,2} instead of {1,3})
 SPLIT_PATTERN = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,2}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
