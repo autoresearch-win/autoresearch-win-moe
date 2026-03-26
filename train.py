@@ -31,6 +31,9 @@ from prepare import (
     make_dataloader,
 )
 
+# Hard timeout: 60 minutes total (50 min budget + 10 min extra)
+HARD_TIMEOUT = TIME_BUDGET + 600
+
 # ---------------------------------------------------------------------------
 # Runtime configuration
 # ---------------------------------------------------------------------------
@@ -1203,9 +1206,9 @@ DEVICE_BATCH_SIZE = 8
 EVAL_BATCH_SIZE = 8
 
 # MoE configuration (always enabled)
-NUM_EXPERTS = 32
+NUM_EXPERTS = 4
 TOP_K_EXPERTS = 2
-NUM_SHARED_EXPERTS = 2
+NUM_SHARED_EXPERTS = 1
 EXPERT_DIM = 0  # 0 means use model_dim
 
 # mHC configuration
@@ -1602,6 +1605,13 @@ def _run_training_once(runtime, tokenizer, config, device_batch_size, smoke_test
             gc.collect()
 
         step += 1
+        # Hard timeout based on wall-clock time
+        elapsed_wallclock = time.time() - t_start_training
+        if elapsed_wallclock >= HARD_TIMEOUT:
+            print(
+                f"\nHard timeout reached after {elapsed_wallclock:.0f}s (limit: {HARD_TIMEOUT}s)"
+            )
+            break
         if max_steps is not None and step >= max_steps:
             break
         if step > 10 and total_training_time >= target_training_seconds:
