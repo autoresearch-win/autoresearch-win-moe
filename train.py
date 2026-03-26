@@ -1745,7 +1745,7 @@ def main():
     model.eval()
 
     eval_tokens = (
-        max(MAX_SEQ_LEN * chosen_train_batch * 2, 8192)
+        max(MAX_SEQ_LEN * chosen_train_batch * 2, vocab_size)
         if args.smoke_test
         else EVAL_TOKENS
     )
