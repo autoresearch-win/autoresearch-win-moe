@@ -18,3 +18,4 @@ aacca4d	0.000000	0.0	discard	increase to 32 experts, 2 shared (timeout)
 fec3d57	1.323132	7.6	keep	50min training with depth=6, 4 experts
 5a9fd42	1.419943	11.7	keep	50min training with depth=8, batch_size=8, activation checkpointing
 e73e2df	1.327411	7.5	keep	baseline with vocab=16384, 60min training
+49a13bf	1.381647	9.5	discard	try 8 experts (worse than 4)
