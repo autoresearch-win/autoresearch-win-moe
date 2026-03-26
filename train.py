@@ -1201,8 +1201,8 @@ WARMDOWN_RATIO = 0.8
 FINAL_LR_FRAC = 0.0
 
 # Model size + memory defaults
-DEPTH = 6
-DEVICE_BATCH_SIZE = 8
+DEPTH = 8
+DEVICE_BATCH_SIZE = 4
 EVAL_BATCH_SIZE = 8
 
 # MoE configuration (always enabled)

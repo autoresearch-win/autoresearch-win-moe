@@ -14,3 +14,5 @@ e3ebce0	0.885242	2.3	discard	increase Muon beta2 to 0.99
 8f94c4a	0.928131	2.3	discard	extend warmdown to 80%
 a74ab8b	0.000000	0.0	crash	increase mHC AdamW LR to scalar_lr*0.2
 aacca4d	0.000000	0.0	discard	increase to 32 experts, 2 shared (timeout)
+8af1092	1.235903	4.5	keep	50min training with fineweb-edu dataset, 4 experts baseline
+fec3d57	1.323132	7.6	keep	50min training with depth=6, 4 experts
