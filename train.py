@@ -1206,9 +1206,9 @@ DEVICE_BATCH_SIZE = 8
 EVAL_BATCH_SIZE = 8
 
 # MoE configuration (always enabled)
-NUM_EXPERTS = 4
+NUM_EXPERTS = 8
 TOP_K_EXPERTS = 2
-NUM_SHARED_EXPERTS = 1
+NUM_SHARED_EXPERTS = 2
 EXPERT_DIM = 0  # 0 means use model_dim
 
 # mHC configuration
