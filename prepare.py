@@ -22,6 +22,7 @@ import requests
 import rustbpe
 import tiktoken
 import torch
+import datasets
 
 # ---------------------------------------------------------------------------
 # Constants (fixed, do not modify)
@@ -30,7 +31,7 @@ import torch
 MAX_SEQ_LEN = 2048  # context length
 TIME_BUDGET = 3000  # training time budget in seconds (50 minutes)
 EVAL_TOKENS = 40 * 524288  # number of tokens for validation eval
-VOCAB_SIZE = 8192
+VOCAB_SIZE = 16384
 
 # BPE split pattern (GPT-4 style, with \p{N}{1,2} instead of {1,3})
 SPLIT_PATTERN = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,2}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
@@ -42,8 +43,8 @@ BOS_TOKEN = "<|reserved_0|>"
 # Dataset + cache configuration
 # ---------------------------------------------------------------------------
 
-DEFAULT_DATASET = "tinystories"
-DATASET_CHOICES = ("tinystories",)
+DEFAULT_DATASET = "fineweb-edu"
+DATASET_CHOICES = ("tinystories", "fineweb-edu")
 
 
 def _default_cache_dir():
@@ -76,6 +77,17 @@ DATASET_CONFIGS = {
             "test": (0, 10_000),
             "val": (10_000, 20_000),
             "train": (20_000, None),
+        },
+    },
+    "fineweb-edu": {
+        "filename": "fineweb_edu_validation.parquet",
+        "use_datasets_lib": True,
+        "dataset_name": "deatos/fineweb-edu-10b-combined",
+        "split": "validation",
+        "splits": {
+            "train": (0, None),  # entire validation split for training
+            "val": (0, None),  # same for validation
+            "test": (0, None),  # same for test (unused)
         },
     },
 }
@@ -217,9 +229,38 @@ def _download_tinystories_file(dataset_name):
     print(f"Data: downloaded {filename} to {filepath}")
 
 
+def _download_with_datasets_lib(dataset_name):
+    config = DATASET_CONFIGS[dataset_name]
+    data_dir = _data_dir(dataset_name)
+    os.makedirs(data_dir, exist_ok=True)
+
+    filename = config["filename"]
+    filepath = os.path.join(data_dir, filename)
+
+    if os.path.exists(filepath):
+        print(f"Data: {filename} already downloaded at {filepath}")
+        return
+
+    dataset_name_hf = config["dataset_name"]
+    split = config["split"]
+
+    print(
+        f"Data: downloading {dataset_name_hf} split={split} using datasets library..."
+    )
+    ds = datasets.load_dataset(dataset_name_hf, split=split)
+
+    # Save as parquet
+    ds.to_parquet(filepath)
+    print(f"Data: saved {filename} to {filepath}")
+
+
 def download_data(dataset_name):
     dataset = _resolve_dataset_name(dataset_name)
-    _download_tinystories_file(dataset)
+    config = DATASET_CONFIGS.get(dataset)
+    if config.get("use_datasets_lib", False):
+        _download_with_datasets_lib(dataset)
+    else:
+        _download_tinystories_file(dataset)
 
 
 # ---------------------------------------------------------------------------
@@ -246,19 +287,22 @@ def list_parquet_files(dataset_name=None):
     return []
 
 
-def _iter_tinystories_texts(split, dataset_name=None):
+def _iter_texts(split, dataset_name=None):
     dataset = _resolve_dataset_name(dataset_name)
     config = DATASET_CONFIGS[dataset]
     start_idx, end_idx = config["splits"][split]
-    tiny_path = _resolve_tiny_parquet_for_read(dataset)
 
-    if not os.path.exists(tiny_path):
+    parquet_files = list_parquet_files(dataset)
+    if not parquet_files:
         raise FileNotFoundError(
-            f"TinyStories parquet not found at {tiny_path}. Run prepare.py first."
+            f"No parquet files found for dataset {dataset}. Run prepare.py first."
         )
 
+    # Use the first parquet file
+    parquet_path = parquet_files[0]
+
     current_idx = 0
-    parquet_file = pq.ParquetFile(tiny_path)
+    parquet_file = pq.ParquetFile(parquet_path)
     for row_group_idx in range(parquet_file.num_row_groups):
         row_group = parquet_file.read_row_group(row_group_idx, columns=["text"])
         texts = row_group.column("text").to_pylist()
@@ -274,9 +318,12 @@ def _iter_tinystories_texts(split, dataset_name=None):
 
 def text_iterator(dataset_name=None, max_chars=1_000_000_000, doc_cap=10_000):
     dataset = _resolve_dataset_name(dataset_name)
+    config = DATASET_CONFIGS[dataset]
     chars = 0
 
-    text_iter = _iter_tinystories_texts("train", dataset_name=dataset)
+    # Use the first split defined for this dataset
+    split = list(config["splits"].keys())[0]
+    text_iter = _iter_texts(split, dataset_name=dataset)
     for text in text_iter:
         doc = text[:doc_cap] if len(text) > doc_cap else text
         chars += len(doc)
@@ -419,7 +466,7 @@ def _document_batches(split, dataset=None, tokenizer_batch_size=128):
     epoch = 1
     while True:
         batch = []
-        for text in _iter_tinystories_texts(split, dataset_name=dataset_name):
+        for text in _iter_texts(split, dataset_name=dataset_name):
             batch.append(text)
             if len(batch) >= tokenizer_batch_size:
                 yield batch, epoch
