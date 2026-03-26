@@ -1,0 +1,32 @@
+torch.compile disabled in this fork runtime path.
+Using PyTorch SDPA attention backend.
+GPU: NVIDIA GeForce RTX 4060 Ti
+GPU VRAM: 16.0 GB
+GPU CC: 8.9
+GPU profile: ada-10-15gb
+Consumer matrix support: yes
+TF32: enabled
+AMP dtype: torch.bfloat16
+Vocab size: 16,384
+Dataset: fineweb-edu
+Muon compute dtype: torch.bfloat16 (matching AMP dtype)
+Using cached autotune candidate: batch_size=8, checkpointing=on.
+Attention backend: sdpa
+torch.compile: disabled
+Trying train candidate: batch_size=8, activation_checkpointing=enabled
+Model config: {'sequence_len': 2048, 'vocab_size': 16384, 'n_layer': 4, 'n_head': 4, 'n_kv_head': 4, 'n_embd': 256, 'window_pattern': 'SSSL', 'attention_backend': 'sdpa', 'use_activation_checkpointing': True, 'compute_dtype': torch.bfloat16, 'num_experts': 4, 'top_k_experts': 2, 'num_shared_experts': 1, 'expert_dim': 0, 'mhc_expansion': 2}
+Parameter counts:
+  wte                     : 4,194,304
+  value_embeds            : 8,388,608
+  lm_head                 : 4,194,304
+  transformer_matrices    : 5,255,476
+  scalars                 : 8
+  moe_router              : 4,096
+  moe_experts             : 2,097,152
+  moe_shared              : 2,097,152
+  total                   : 22,032,700
+Estimated FLOPs per token: 7.242732e+07
+Scaling AdamW LRs by 1/sqrt(256/768) = 1.732051
+Time budget: 3000s
+Gradient accumulation steps: 32
+step 00000 (0.0%) | loss: 16.257660 | lrm: 1.00 | dt: 19129ms | tok/sec: 27,407 | mfu: 2.2% | epoch: 1 | remaining: 10s    step 00001 (0.0%) | loss: 16.257618 | lrm: 1.00 | dt: 19057ms | tok/sec: 27,511 | mfu: 2.3% | epoch: 1 | remaining: 10s    

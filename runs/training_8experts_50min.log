@@ -1,0 +1,32 @@
+torch.compile disabled in this fork runtime path.
+Using PyTorch SDPA attention backend.
+GPU: NVIDIA GeForce RTX 4060 Ti
+GPU VRAM: 16.0 GB
+GPU CC: 8.9
+GPU profile: ada-10-15gb
+Consumer matrix support: yes
+TF32: enabled
+AMP dtype: torch.bfloat16
+Vocab size: 8,192
+Dataset: fineweb-edu
+Muon compute dtype: torch.bfloat16 (matching AMP dtype)
+Using cached autotune candidate: batch_size=8, checkpointing=on.
+Attention backend: sdpa
+torch.compile: disabled
+Trying train candidate: batch_size=8, activation_checkpointing=enabled
+Model config: {'sequence_len': 2048, 'vocab_size': 8192, 'n_layer': 4, 'n_head': 4, 'n_kv_head': 4, 'n_embd': 256, 'window_pattern': 'SSSL', 'attention_backend': 'sdpa', 'use_activation_checkpointing': True, 'compute_dtype': torch.bfloat16, 'num_experts': 8, 'top_k_experts': 2, 'num_shared_experts': 2, 'expert_dim': 0, 'mhc_expansion': 2}
+Parameter counts:
+  wte                     : 2,097,152
+  value_embeds            : 4,194,304
+  lm_head                 : 2,097,152
+  transformer_matrices    : 9,453,876
+  scalars                 : 8
+  moe_router              : 8,192
+  moe_experts             : 4,194,304
+  moe_shared              : 4,194,304
+  total                   : 17,842,492
+Estimated FLOPs per token: 8.503481e+07
+Scaling AdamW LRs by 1/sqrt(256/768) = 1.732051
+Time budget: 3000s
+Gradient accumulation steps: 32
+step 00000 (0.0%) | loss: 15.564512 | lrm: 1.00 | dt: 6854ms | tok/sec: 76,496 | mfu: 7.4% | epoch: 1 | remaining: 3000s    step 00001 (0.0%) | loss: 15.564681 | lrm: 1.00 | dt: 6528ms | tok/sec: 80,309 | mfu: 7.7% | epoch: 1 | remaining: 3000s    step 00002 (0.0%) | loss: 15.583659 | lrm: 1.00 | dt: 6884ms | tok/sec: 76,160 | mfu: 7.3% | epoch: 1 | remaining: 3000s    step 00003 (0.0%) | loss: 15.188956 | lrm: 1.00 | dt: 7271ms | tok/sec: 72,103 | mfu: 6.9% | epoch: 1 | remaining: 3000s    step 00004 (0.0%) | loss: 14.572088 | lrm: 1.00 | dt: 7370ms | tok/sec: 71,136 | mfu: 6.8% | epoch: 1 | remaining: 3000s    step 00005 (0.0%) | loss: 13.842463 | lrm: 1.00 | dt: 7477ms | tok/sec: 70,119 | mfu: 6.7% | epoch: 1 | remaining: 3000s    step 00006 (0.0%) | loss: 12.980540 | lrm: 1.00 | dt: 7710ms | tok/sec: 67,997 | mfu: 6.5% | epoch: 1 | remaining: 3000s    step 00007 (0.0%) | loss: 12.752883 | lrm: 1.00 | dt: 7874ms | tok/sec: 66,587 | mfu: 6.4% | epoch: 1 | remaining: 3000s    step 00008 (0.0%) | loss: 12.497233 | lrm: 1.00 | dt: 7945ms | tok/sec: 65,992 | mfu: 6.3% | epoch: 1 | remaining: 3000s    step 00009 (0.0%) | loss: 12.223379 | lrm: 1.00 | dt: 7836ms | tok/sec: 66,910 | mfu: 6.4% | epoch: 1 | remaining: 3000s    step 00010 (0.0%) | loss: 11.981290 | lrm: 1.00 | dt: 7975ms | tok/sec: 65,744 | mfu: 6.3% | epoch: 1 | remaining: 3000s    step 00011 (0.0%) | loss: 11.771446 | lrm: 1.00 | dt: 7939ms | tok/sec: 66,039 | mfu: 6.4% | epoch: 1 | remaining: 2992s    step 00012 (0.3%) | loss: 11.555693 | lrm: 1.00 | dt: 7949ms | tok/sec: 65,959 | mfu: 6.3% | epoch: 1 | remaining: 2984s    step 00013 (0.5%) | loss: 11.353097 | lrm: 1.00 | dt: 7902ms | tok/sec: 66,347 | mfu: 6.4% | epoch: 1 | remaining: 2976s    step 00014 (0.8%) | loss: 11.157072 | lrm: 1.00 | dt: 7876ms | tok/sec: 66,571 | mfu: 6.4% | epoch: 1 | remaining: 2968s    step 00015 (1.1%) | loss: 10.950685 | lrm: 1.00 | dt: 7920ms | tok/sec: 66,197 | mfu: 6.4% | epoch: 1 | remaining: 2960s    step 00016 (1.3%) | loss: 10.749604 | lrm: 1.00 | dt: 8008ms | tok/sec: 65,468 | mfu: 6.3% | epoch: 1 | remaining: 2952s    step 00017 (1.6%) | loss: 10.391141 | lrm: 1.00 | dt: 7986ms | tok/sec: 65,651 | mfu: 6.3% | epoch: 1 | remaining: 2944s    step 00018 (1.9%) | loss: 10.361242 | lrm: 1.00 | dt: 7956ms | tok/sec: 65,895 | mfu: 6.3% | epoch: 1 | remaining: 2936s    step 00019 (2.1%) | loss: 10.328698 | lrm: 1.00 | dt: 7976ms | tok/sec: 65,730 | mfu: 6.3% | epoch: 1 | remaining: 2928s    step 00020 (2.4%) | loss: 10.295247 | lrm: 1.00 | dt: 7997ms | tok/sec: 65,556 | mfu: 6.3% | epoch: 1 | remaining: 2920s    step 00021 (2.7%) | loss: 10.219698 | lrm: 1.00 | dt: 7988ms | tok/sec: 65,632 | mfu: 6.3% | epoch: 1 | remaining: 2913s    step 00022 (2.9%) | loss: 10.134893 | lrm: 1.00 | dt: 8001ms | tok/sec: 65,527 | mfu: 6.3% | epoch: 1 | remaining: 2905s    step 00023 (3.2%) | loss: 10.050644 | lrm: 1.00 | dt: 8006ms | tok/sec: 65,490 | mfu: 6.3% | epoch: 1 | remaining: 2896s    step 00024 (3.5%) | loss: 9.952750 | lrm: 1.00 | dt: 8018ms | tok/sec: 65,386 | mfu: 6.3% | epoch: 1 | remaining: 2888s    step 00025 (3.7%) | loss: 9.774324 | lrm: 1.00 | dt: 7914ms | tok/sec: 66,244 | mfu: 6.4% | epoch: 1 | remaining: 2881s    The size of tensor a (8) must match the size of tensor b (6) at non-singleton dimension 0
