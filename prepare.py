@@ -29,7 +29,7 @@ import datasets
 # ---------------------------------------------------------------------------
 
 MAX_SEQ_LEN = 2048  # context length
-TIME_BUDGET = 3000  # training time budget in seconds (50 minutes)
+TIME_BUDGET = 3600  # training time budget in seconds (60 minutes)
 EVAL_TOKENS = 40 * 524288  # number of tokens for validation eval
 VOCAB_SIZE = 16384
 

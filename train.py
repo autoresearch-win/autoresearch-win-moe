@@ -32,7 +32,7 @@ from prepare import (
 )
 
 # Hard timeout: 60 minutes total (50 min budget + 10 min extra)
-HARD_TIMEOUT = TIME_BUDGET + 600
+HARD_TIMEOUT = TIME_BUDGET + 1800  # budget + 30 min buffer
 
 # ---------------------------------------------------------------------------
 # Runtime configuration
