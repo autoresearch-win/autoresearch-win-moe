@@ -31,6 +31,9 @@ from prepare import (
     make_dataloader,
 )
 
+# Time budget for experiment
+TIME_BUDGET = 5400  # 90 minutes
+
 # Hard timeout: 60 minutes total (50 min budget + 10 min extra)
 HARD_TIMEOUT = TIME_BUDGET + 1800  # budget + 30 min buffer
 

@@ -1,2 +1,4 @@
 commit	val_bpb	memory_gb	status	description
 edb175c	1.328458	7.5	keep	baseline (fineweb-edu, vocab=16384, depth=8, 4 experts)
+2b68cfb	2.000548	8.6	discard	6 experts, top-2, depth=8 (5min test - not enough training)
+2b68cfb	1.376635	8.6	keep	6 experts, top-2, depth=8, 60min (requested config)
