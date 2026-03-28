@@ -1,2 +1,3 @@
 commit	val_bpb	memory_gb	status	description
 edb175c	1.328458	7.5	keep	baseline (fineweb-edu, vocab=16384, depth=8, 4 experts)
+4276cce	1.270563	8.6	keep	6 experts, top-2, 90min (IMPROVEMENT over baseline)

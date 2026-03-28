@@ -525,6 +525,10 @@ class MoELayer(nn.Module):
         if self.training:
             with torch.no_grad():
                 expert_usage = expert_mask.sum(dim=0).detach()
+                if expert_usage.shape[0] != self.expert_balance.shape[0]:
+                    raise RuntimeError(
+                        f"Expert balance shape mismatch: {expert_usage.shape[0]} vs {self.expert_balance.shape[0]}, num_experts={self.num_experts}, n_layer assumed=8"
+                    )
                 self.expert_balance.lerp_(
                     expert_usage / num_tokens, self.expert_balance_scale
                 )
